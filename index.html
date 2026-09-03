@@ -3,223 +3,154 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>לוח שליטה — חדשות אורן</title>
+  <title>סיכום 3 שעות</title>
   <style>
     :root {
-      --bg: #0b1220;
-      --panel: #121b2e;
-      --panel-2: #182338;
-      --line: #2a3a58;
-      --text: #e8eef8;
-      --muted: #93a0b8;
-      --gold: #e3b341;
-      --gold-2: #c99620;
-      --ok: #3dcf8e;
-      --warn: #f0b429;
-      --bad: #ef6b6b;
-      --shadow: 0 18px 40px rgba(0,0,0,.28);
+      --bg: #0b1220; --panel: #121b2e; --panel-2: #182338; --line: #2a3a58;
+      --text: #e8eef8; --muted: #93a0b8; --gold: #e3b341; --ok: #3dcf8e; --warn: #f0b429;
     }
     * { box-sizing: border-box; }
-    html, body { margin: 0; padding: 0; background: var(--bg); color: var(--text); font-family: "Segoe UI", "Heebo", Arial, sans-serif; }
-    body { min-height: 100vh; }
-    .wrap { max-width: 1180px; margin: 0 auto; padding: 28px 18px 60px; }
-    header { display: flex; justify-content: space-between; gap: 16px; align-items: flex-start; margin-bottom: 22px; flex-wrap: wrap; }
-    h1 { margin: 0 0 6px; font-size: 1.7rem; letter-spacing: -.02em; }
-    .sub { color: var(--muted); margin: 0; line-height: 1.5; max-width: 720px; }
-    .badge { background: #1d2b45; border: 1px solid var(--line); color: var(--muted); padding: 8px 12px; border-radius: 999px; font-size: .85rem; white-space: nowrap; }
-    .grid { display: grid; grid-template-columns: 1.1fr .9fr; gap: 16px; }
-    @media (max-width: 900px) { .grid { grid-template-columns: 1fr; } }
-    .card { background: linear-gradient(180deg, var(--panel), var(--panel-2)); border: 1px solid var(--line); border-radius: 18px; padding: 18px; box-shadow: var(--shadow); }
-    .card h2 { margin: 0 0 10px; font-size: 1.15rem; }
-    .step { display: flex; gap: 12px; padding: 12px 0; border-bottom: 1px solid #223049; }
-    .step:last-child { border-bottom: 0; }
-    .num { width: 28px; height: 28px; border-radius: 50%; background: #243552; display: grid; place-items: center; font-weight: 700; flex: 0 0 28px; }
-    .num.on { background: var(--gold); color: #1a1404; }
-    .step p { margin: 0; color: var(--muted); font-size: .93rem; line-height: 1.45; }
-    .step strong { color: var(--text); display: block; margin-bottom: 3px; }
-    .row { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 10px; }
-    button, .btn {
-      appearance: none; border: 0; cursor: pointer; text-decoration: none; display: inline-flex; align-items: center; justify-content: center; gap: 8px;
-      background: var(--gold); color: #1a1404; font-weight: 700; border-radius: 12px; padding: 11px 14px; font-size: .95rem;
-    }
-    button.secondary, .btn.secondary { background: #243552; color: var(--text); }
-    button.ghost, .btn.ghost { background: transparent; color: var(--text); border: 1px solid var(--line); }
-    button:disabled { opacity: .55; cursor: not-allowed; }
-    input, textarea {
-      width: 100%; background: #0e1626; color: var(--text); border: 1px solid var(--line); border-radius: 12px; padding: 11px 12px; font: inherit;
-    }
-    label { display: block; color: var(--muted); font-size: .8rem; margin: 10px 0 6px; }
-    .phone { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; letter-spacing: .3px; direction: ltr; text-align: left; }
-    .status { margin-top: 12px; padding: 10px 12px; border-radius: 12px; background: #0e1626; border: 1px solid var(--line); color: var(--muted); font-size: .9rem; min-height: 44px; }
+    html, body { margin: 0; background: var(--bg); color: var(--text); font-family: "Segoe UI", "Heebo", Arial, sans-serif; }
+    .wrap { max-width: 860px; margin: 0 auto; padding: 20px 14px 48px; }
+    h1 { margin: 0 0 4px; font-size: 1.45rem; }
+    .sub { color: var(--muted); margin: 0 0 16px; line-height: 1.45; }
+    .bar { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; margin-bottom: 14px; }
+    button { appearance: none; border: 0; cursor: pointer; font-weight: 700; background: var(--gold); color: #1a1404; border-radius: 12px; padding: 11px 14px; font-size: .95rem; }
+    button.secondary { background: #243552; color: var(--text); }
+    .meta { color: var(--muted); font-size: .85rem; }
+    .status { padding: 10px 12px; border-radius: 12px; background: #0e1626; border: 1px solid var(--line); color: var(--muted); margin-bottom: 14px; }
     .status.ok { color: var(--ok); border-color: #1f5c43; }
     .status.warn { color: var(--warn); }
-    .results { min-height: 280px; resize: vertical; line-height: 1.55; }
-    .hint { color: var(--muted); font-size: .85rem; margin-top: 8px; line-height: 1.45; }
-    .warn-box { background: #2a2210; border: 1px solid #5a4718; color: #f3d48a; padding: 12px 14px; border-radius: 12px; font-size: .9rem; line-height: 1.5; margin-bottom: 14px; }
-    iframe { width: 100%; height: 720px; border: 0; border-radius: 16px; background: #0e1626; }
-    .iframe-wrap { margin-top: 16px; }
-    footer { margin-top: 18px; color: var(--muted); font-size: .82rem; }
+    .card { background: linear-gradient(180deg, var(--panel), var(--panel-2)); border: 1px solid var(--line); border-radius: 16px; padding: 14px; margin-bottom: 12px; }
+    .digest { white-space: pre-wrap; line-height: 1.65; font-size: 1rem; }
+    .item { padding: 12px 0; border-bottom: 1px solid #223049; }
+    .item:last-child { border-bottom: 0; }
+    .item a { color: var(--text); text-decoration: none; font-weight: 700; line-height: 1.4; }
+    .item a:hover { color: var(--gold); }
+    .src { color: var(--muted); font-size: .8rem; margin-top: 4px; }
+    .count { background: #243552; color: var(--gold); border-radius: 999px; padding: 2px 8px; font-size: .75rem; }
   </style>
 </head>
 <body>
   <div class="wrap">
-    <header>
-      <div>
-        <h1>לוח שליטה לחדשות</h1>
-        <p class="sub">רצף הפעולות שלך במקום אחד: חיבור Mahadura, פתיחת הבוט, שליחת <b dir="ltr">/summary3h</b>, ושמירת התוצאות כאן.</p>
-      </div>
-      <div class="badge" id="clock"></div>
-    </header>
-
-    <div class="warn-box">
-      דפדפן לא יכול להיכנס לטלגרם במקומך ולא יכול לקרוא את הצ׳אט של הבוט לבד — בגלל קוד חד־פעמי והרשאות אבטחה.
-      הדף הזה מקצר את התהליך ללחיצות, ממלא את המספר, פותח את החלונות הנכונים, ומציג כאן את הסיכום אחרי שמדביקים אותו.
+    <h1>המוח המקומי — /summary3h</h1>
+    <p class="sub">בלי Replit. אוסף מבזקים ממקורות פתוחים ב־3 השעות האחרונות, מסנן כפילויות ומציג סיכום כאן.</p>
+    <div class="bar">
+      <button id="run" type="button">הפק סיכום עכשיו</button>
+      <button id="copy" class="secondary" type="button">העתק סיכום</button>
+      <button id="openBot" class="secondary" type="button">פתח בוט בטלגרם</button>
+      <span class="meta" id="clock"></span>
     </div>
-
-    <div class="grid">
-      <section class="card">
-        <h2>הרצף</h2>
-        <div class="step">
-          <div class="num on">1</div>
-          <div>
-            <strong>חיבור Mahadura News Control</strong>
-            <p>נפתח את לוח הבקרה. אם מתבקש טלפון — המספר כבר מוכן להעתקה.</p>
-          </div>
-        </div>
-        <div class="step">
-          <div class="num on">2</div>
-          <div>
-            <strong>קוד מטלגרם</strong>
-            <p>אחרי שליחת הקוד באתר, מאשרים בטלגרם. רק אחרי Connected אפשר להפעיל את שירות החדשות.</p>
-          </div>
-        </div>
-        <div class="step">
-          <div class="num on">3</div>
-          <div>
-            <strong>בוט @newsOren3515_bot</strong>
-            <p>נפתח את הבוט עם הפקודה <span dir="ltr">/summary3h</span> מועתקת. שולחים, ממתינים, ומדביקים למטה.</p>
-          </div>
-        </div>
-
-        <label for="phone">מספר טלפון</label>
-        <input id="phone" class="phone" value="+972547476928" />
-
-        <div class="row">
-          <button id="runAll" type="button">הרץ הכל</button>
-          <button id="openControl" class="secondary" type="button">רק לוח הבקרה</button>
-          <button id="copyPhone" class="ghost" type="button">העתק מספר</button>
-        </div>
-        <div class="row">
-          <button id="openBot" class="secondary" type="button">פתח בוט + העתק /summary3h</button>
-          <a class="btn ghost" href="https://web.telegram.org/a/#@newsOren3515_bot" target="_blank" rel="noopener">טלגרם ווב</a>
-        </div>
-        <div class="status" id="status">מוכן. לחץ על «הרץ הכל».</div>
-      </section>
-
-      <section class="card">
-        <h2>תוצאות /summary3h</h2>
-        <p class="hint" style="margin-top:0">כשהבוט מחזיר את הסיכום — העתק מהטלגרם והדבק כאן. נשמר אוטומטית בדפדפן.</p>
-        <textarea id="results" class="results" placeholder="הדבק כאן את תשובת הבוט..."></textarea>
-        <div class="row">
-          <button id="saveResults" type="button">שמור</button>
-          <button id="copyResults" class="secondary" type="button">העתק תוצאות</button>
-          <button id="clearResults" class="ghost" type="button">נקה</button>
-        </div>
-        <div class="status" id="saveStatus">אין סיכום שמור עדיין.</div>
-      </section>
-    </div>
-
-    <section class="card iframe-wrap">
-      <h2>לוח הבקרה של Mahadura</h2>
-      <div class="row" style="margin-bottom:10px">
-        <button id="reloadFrame" class="secondary" type="button">רענן הטמעה</button>
-        <a class="btn ghost" id="controlLink" target="_blank" rel="noopener">פתח בחלון מלא</a>
-      </div>
-      <iframe id="controlFrame" title="Mahadura News Control" referrerpolicy="no-referrer-when-downgrade"></iframe>
-    </section>
+    <div class="status" id="status">טוען סיכום…</div>
+    <section class="card"><div id="digest" class="digest">ממתין לנתונים.</div></section>
+    <section class="card" id="list"></section>
   </div>
-
   <script>
-    const CONTROL_URL = "https://5c81127f-6c51-474b-a3ee-423afdc3b696-00-tt84ctkipe1h.pike.replit.dev/?nativeBrowserPresentationStyle=fullScreen";
-    const BOT_WEB = "https://web.telegram.org/a/#@newsOren3515_bot";
-    const BOT_APP = "https://t.me/newsOren3515_bot";
-    const COMMAND = "/summary3h";
+    const HOURS = 3;
+    const BOT = "https://t.me/newsOren3515_bot";
+    const FEEDS = [
+      { name: "ynet חדשות", url: "https://www.ynet.co.il/Integration/StoryRss2.xml" },
+      { name: "ynet מבזקים", url: "https://www.ynet.co.il/Integration/StoryRss1854.xml" },
+      { name: "וואלה", url: "https://rss.walla.co.il/feed/1" },
+      { name: "מעריב מבזקים", url: "https://www.maariv.co.il/Rss/RssFeedsMivzakim" },
+      { name: "Google News IL", url: "https://news.google.com/rss?hl=he&gl=IL&ceid=IL:he" }
+    ];
+    const PROXIES = [
+      (u) => "https://corsproxy.io/?" + encodeURIComponent(u),
+      (u) => "https://api.allorigins.win/raw?url=" + encodeURIComponent(u)
+    ];
     const $ = (id) => document.getElementById(id);
-    const phoneEl = $("phone");
     const statusEl = $("status");
-    const resultsEl = $("results");
-    const saveStatusEl = $("saveStatus");
-    const frame = $("controlFrame");
-    $("controlLink").href = CONTROL_URL;
-    frame.src = CONTROL_URL;
-    const setStatus = (text, kind) => {
-      statusEl.textContent = text;
-      statusEl.className = "status" + (kind ? " " + kind : "");
-    };
-    const copyText = async (text) => {
-      try { await navigator.clipboard.writeText(text); return true; }
-      catch {
-        const tmp = document.createElement("textarea");
-        tmp.value = text; document.body.appendChild(tmp); tmp.select();
-        const ok = document.execCommand("copy"); tmp.remove(); return ok;
-      }
-    };
-    const tick = () => {
-      $("clock").textContent = new Date().toLocaleString("he-IL", { dateStyle: "short", timeStyle: "medium" });
-    };
+    const digestEl = $("digest");
+    const listEl = $("list");
+    const setStatus = (t, k) => { statusEl.textContent = t; statusEl.className = "status" + (k ? " " + k : ""); };
+    const tick = () => { $("clock").textContent = new Date().toLocaleString("he-IL", { dateStyle: "short", timeStyle: "medium" }); };
     tick(); setInterval(tick, 1000);
-    const saved = localStorage.getItem("summary3h");
-    const savedAt = localStorage.getItem("summary3h_at");
-    if (saved) {
-      resultsEl.value = saved;
-      saveStatusEl.textContent = savedAt ? "סיכום אחרון נשמר ב־" + savedAt : "סיכום שמור נטען.";
-      saveStatusEl.classList.add("ok");
-    }
-    $("copyPhone").onclick = async () => {
-      const ok = await copyText(phoneEl.value.trim());
-      setStatus(ok ? "המספר הועתק." : "ההעתקה נחסמה.", ok ? "ok" : "warn");
+    const decode = (s) => {
+      const t = document.createElement("textarea");
+      t.innerHTML = (s || "").replace(/<!\[CDATA\[|\]\]>/g, "");
+      return t.value.replace(/<[^>]+>/g, " ").replace(/\s+/g, " ").trim();
     };
-    $("openControl").onclick = async () => {
-      await copyText(phoneEl.value.trim());
-      window.open(CONTROL_URL, "_blank", "noopener,noreferrer");
-      setStatus("לוח הבקרה נפתח. המספר הועתק.");
+    const parseRss = (xml, source) => {
+      const doc = new DOMParser().parseFromString(xml, "text/xml");
+      return [...doc.querySelectorAll("item")].map((item) => {
+        const title = decode(item.querySelector("title")?.textContent);
+        const link = (item.querySelector("link")?.textContent || "").trim();
+        const pub = item.querySelector("pubDate")?.textContent || "";
+        const date = pub ? new Date(pub) : null;
+        return { title, link, date, source };
+      }).filter((x) => x.title);
     };
-    $("openBot").onclick = async () => {
-      await copyText(COMMAND);
-      window.open(BOT_APP, "_blank", "noopener,noreferrer");
-      setStatus("הפקודה /summary3h הועתקה. הדבק בבוט ושלח.");
+    const fetchText = async (url) => {
+      let last;
+      for (const make of PROXIES) {
+        try {
+          const res = await fetch(make(url), { cache: "no-store" });
+          if (!res.ok) throw new Error(res.status);
+          return await res.text();
+        } catch (e) { last = e; }
+      }
+      throw last || new Error("fetch failed");
     };
-    $("runAll").onclick = async () => {
-      await copyText(phoneEl.value.trim());
-      window.open(CONTROL_URL, "_blank", "noopener,noreferrer");
-      setTimeout(async () => {
-        await copyText(COMMAND);
-        window.open(BOT_APP, "_blank", "noopener,noreferrer");
-        setStatus("נפתחו לוח הבקרה והבוט. הדבק מספר / פקודה בשדה המתאים.");
-      }, 800);
+    const tokens = (title) => title.replace(/[^\u0590-\u05FFa-zA-Z0-9 ]/g, " ").split(/\s+/).filter((w) => w.length > 2);
+    const similar = (a, b) => {
+      const A = new Set(tokens(a)); const B = new Set(tokens(b));
+      if (!A.size || !B.size) return 0;
+      let n = 0; for (const x of A) if (B.has(x)) n++;
+      return n / Math.min(A.size, B.size);
     };
-    $("reloadFrame").onclick = () => { frame.src = CONTROL_URL; };
-    const persist = () => {
-      localStorage.setItem("summary3h", resultsEl.value);
-      const when = new Date().toLocaleString("he-IL");
-      localStorage.setItem("summary3h_at", when);
-      saveStatusEl.textContent = "נשמר ב־" + when;
-      saveStatusEl.className = "status ok";
+    const cluster = (items) => {
+      const groups = [];
+      for (const item of items) {
+        const hit = groups.find((g) => similar(g[0].title, item.title) >= 0.55);
+        if (hit) hit.push(item); else groups.push([item]);
+      }
+      return groups.sort((a, b) => b.length - a.length || ((b[0].date || 0) - (a[0].date || 0)));
     };
-    $("saveResults").onclick = persist;
-    resultsEl.addEventListener("input", persist);
-    $("copyResults").onclick = async () => {
-      const ok = await copyText(resultsEl.value);
-      saveStatusEl.textContent = ok ? "התוצאות הועתקו." : "ההעתקה נכשלה.";
-      saveStatusEl.className = "status " + (ok ? "ok" : "warn");
+    const fmtTime = (d) => d && !isNaN(d) ? d.toLocaleTimeString("he-IL", { hour: "2-digit", minute: "2-digit" }) : "";
+    const buildDigest = (groups, from, to) => {
+      const lines = ["סיכום " + HOURS + " השעות האחרונות", from.toLocaleString("he-IL") + " → " + to.toLocaleString("he-IL"), "אירועים ייחודיים: " + groups.length, ""];
+      groups.slice(0, 18).forEach((g, i) => {
+        const srcs = [...new Set(g.map((x) => x.source))].join(", ");
+        lines.push((i + 1) + ". " + g[0].title);
+        lines.push("   " + (fmtTime(g[0].date) || "") + " · " + srcs + (g.length > 1 ? " · " + g.length + " מקורות" : ""));
+      });
+      return lines.join("\n");
     };
-    $("clearResults").onclick = () => {
-      resultsEl.value = "";
-      localStorage.removeItem("summary3h");
-      localStorage.removeItem("summary3h_at");
-      saveStatusEl.textContent = "הסיכום נמחק.";
-      saveStatusEl.className = "status";
+    const run = async () => {
+      setStatus("מושך מקורות…");
+      const now = new Date();
+      const from = new Date(now.getTime() - HOURS * 60 * 60 * 1000);
+      const results = await Promise.allSettled(FEEDS.map(async (f) => parseRss(await fetchText(f.url), f.name)));
+      const ok = results.filter((r) => r.status === "fulfilled").map((r) => r.value).flat();
+      const failed = results.filter((r) => r.status === "rejected").length;
+      const recent = ok.filter((x) => !x.date || isNaN(x.date) || (x.date >= from && x.date <= now));
+      const withDate = recent.filter((x) => x.date && !isNaN(x.date)).sort((a, b) => b.date - a.date);
+      const noDate = recent.filter((x) => !x.date || isNaN(x.date));
+      const items = [...withDate, ...noDate];
+      const groups = cluster(items);
+      if (!groups.length) {
+        setStatus("לא נמצאו ידיעות בחלון הזמן.", "warn");
+        digestEl.textContent = "אין נתונים."; listEl.innerHTML = ""; return;
+      }
+      const text = buildDigest(groups, from, now);
+      digestEl.textContent = text;
+      localStorage.setItem("summary3h_local", text);
+      listEl.innerHTML = groups.map((g) => {
+        const it = g[0];
+        return `<div class="item"><a href="${it.link || "#"}" target="_blank" rel="noopener">${it.title}</a>
+          <div class="src">${fmtTime(it.date)} · ${[...new Set(g.map(x=>x.source))].join(" · ")}
+          ${g.length > 1 ? `<span class="count">${g.length}</span>` : ""}</div></div>`;
+      }).join("");
+      setStatus("מוכן. " + groups.length + " ידיעות ייחודיות מתוך " + items.length + " כתבות" + (failed ? " (" + failed + " מקורות לא נטענו)" : "") + ".", failed ? "warn" : "ok");
     };
+    $("run").onclick = run;
+    $("openBot").onclick = () => window.open(BOT, "_blank");
+    $("copy").onclick = async () => {
+      try { await navigator.clipboard.writeText(digestEl.textContent || ""); setStatus("הסיכום הועתק.", "ok"); }
+      catch { setStatus("ההעתקה נחסמה.", "warn"); }
+    };
+    run();
   </script>
 </body>
 </html>
